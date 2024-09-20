@@ -73,12 +73,12 @@ def ProcessedSetting():
     print(f"Training Loss: {training_loss}")
     for w, sim in words_model.wv.most_similar('alarmclock_1'):
         print((w,sim))
-
+# Suche nach einzelnen Strings und Liste
 def word2Vec(data):
     tmp = gensim.models.Word2Vec(data, min_count=1, vector_size=100, window=5)
     tmp2 = word_embeddings.get_data()
     test = gensim.models.Word2Vec(tmp2, min_count=1, vector_size=100, window=5)
-    #haha = test.wv.most_similar(positive=['alarmclock_2'], topn=10 )
+    haha = test.wv.most_similar(positive=['alarmclock_2'], topn=10 )
     for w, sim in test.wv.most_similar('clock'):
         print((w,sim))
     #print(haha)
