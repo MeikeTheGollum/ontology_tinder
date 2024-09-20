@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-    <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1726732532740" name="http://www.ease-crc.org/ont/SOMA-HOME.owl" uri="SOMA_home.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1726732532740" name="http://www.ease-crc.org/ont/SOMA.owl" uri="SOMA_rdf.owl"/>
-    </group>
-</catalog>

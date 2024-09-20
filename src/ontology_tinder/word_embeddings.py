@@ -8,9 +8,9 @@ import collector
 
 warnings.filterwarnings(action='ignore')
 
-# Reads current test files
-sample1 = open("C:/Users/meike/ontology_tinder/src/files/names.txt")
-sample2 = open("C:/Users/meike/ontology_tinder/src/files/names2.txt")
+# Reads current test resources
+sample1 = open("C:/Users/meike/ontology_tinder/src/resources/names.txt")
+sample2 = open("C:/Users/meike/ontology_tinder/src/resources/names2.txt")
 
 s1 = sample1.read()
 s2 = sample2.read()

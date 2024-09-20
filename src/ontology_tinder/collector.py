@@ -9,7 +9,7 @@ import word_embeddings
 
 
 
-onto = get_ontology("file://C:/Users/meike/ontology_tinder/src/files/SOMA_home.owl").load()
+onto = get_ontology("file://C:/Users/meike/ontology_tinder/src/resources/SOMA_home.owl").load()
 graph = default_world.as_rdflib_graph()
 # DUL = Namespace("http://www.ease-crc.org/ont/")
 # graph.bind("DUL", DUL)
