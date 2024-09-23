@@ -36,7 +36,23 @@ class OntologyTinder:
         #         if concept.name.split("_")[0] in model}
         return word_vectors
 
-    def most_similar_concept_of_name(self, names: typing_extensions.List[str]) -> typing_extensions.List[owlready2.Thing]:
+    def most_similar_concept_of_name(self, name: str) -> typing_extensions.List[owlready2.Thing]:
+        """
+        Find the most similar concepts for a given string in the ontology.
+        This uses a word embedding model for all concepts and the name to calculate the most similar concept.
+        :param name: The name
+        :return: The most similar concepts
+        """
+        # convert the name to a token
+        #model = Word2Vec[name]
+        vector = self.concept_embeddings[name]
+
+        # compare with tokens from self.concept_embeddings
+        result = self.concept_embeddings.most_similar(positive=name)
+        print(result)
+        return result
+
+    def most_similar_concept_of_names(self, names: typing_extensions.List[str]) -> typing_extensions.List[owlready2.Thing]:
         """
         Find the most similar concepts for a list of names in the ontology.
         This uses a word embedding model for all concepts and the name to calculate the most similar concept.
@@ -49,5 +65,4 @@ class OntologyTinder:
         model1 = Word2Vec(names, min_count=1, vector_size=100, window=5)
 
         # compare with tokens from self.concept_embeddings
-
         # return the most similar concepts
