@@ -3,32 +3,26 @@ from gensim.models import Word2Vec
 import gensim
 from nltk.tokenize import sent_tokenize, word_tokenize
 import  warnings
-import collector
 
 
 warnings.filterwarnings(action='ignore')
 
 # Reads current test resources
-sample1 = open("C:/Users/meike/ontology_tinder/src/resources/names.txt")
-sample2 = open("C:/Users/meike/ontology_tinder/src/resources/names2.txt")
+sample1 = open("C:/Users/meike/ontology_tinder/resources/names.txt")
+
 
 s1 = sample1.read()
-s2 = sample2.read()
 
 # Replace escape character with space
 f1 = s1.replace("\n", " ")
-f2 = s2.replace("\n", " ")
 
 data = []
 
 #iterate through each sentence in the file
 for i in sent_tokenize(f1):
-    for x in sent_tokenize(f2):
-        temp = []
-        for j in word_tokenize(i):
-            for w in word_tokenize(x):
-                temp.append(j.lower())
-                temp.append(w.lower())
+    temp = []
+    for j in word_tokenize(i):
+        temp.append(j.lower())
     data.append(temp)
 #print(data)
 
