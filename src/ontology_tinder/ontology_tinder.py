@@ -65,4 +65,7 @@ class OntologyTinder:
         model1 = Word2Vec(names, min_count=1, vector_size=100, window=5)
 
         # compare with tokens from self.concept_embeddings
+        result = [self.concept_embeddings.most_similar(positive=name) for name in names ]
         # return the most similar concepts
+        print(result)
+        return result

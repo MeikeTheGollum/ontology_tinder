@@ -40,8 +40,12 @@ class MinimalOntologyTinderTestCase(unittest.TestCase):
         self.assertEqual(c2, ('wall', -0.052346739917993546))
     def test_ontology_tinder_list_names(self):
         most_similar_concepts = self.ot.most_similar_concept_of_names(["alarmclock", "wall"])
-        self.assertEqual(len(most_similar_concepts), 1)
-        c1 = most_similar_concepts
+        self.assertEqual(len(most_similar_concepts), 2)
+        c1, c2 = most_similar_concepts
+        self.assertEqual(c1[0], ('dishwasher', -0.02367166429758072) )
+        self.assertEqual(c1[1], ('wall', -0.052346739917993546) )
+        self.assertEqual(c2[0], ('dishwasher', -0.010839177295565605))
+        self.assertEqual(c2[1], ('alarmclock', -0.05234673619270325))
 
 
 class OntologyTinderTestCase(unittest.TestCase):
