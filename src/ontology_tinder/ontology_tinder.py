@@ -64,3 +64,13 @@ class OntologyTinder:
         result = [self.concept_embeddings.most_similar(positive=name) for name in names ]
         # return the most similar concepts
         return result
+
+    def closest_concept_of_name(self, name: str) -> typing_extensions.List[owlready2.Thing]:
+        """
+        Instead of search for a list of most similar matches, this returns the first entry of the list of most similar
+        concepts of a given name.
+
+        :param name: The name
+        :return: The most likely concept
+        """
+        return self.most_similar_concept_of_name(name)[0]

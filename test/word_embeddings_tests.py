@@ -47,6 +47,11 @@ class MinimalOntologyTinderTestCase(unittest.TestCase):
         self.assertEqual(c2[0], ('dishwasher', -0.010839177295565605))
         self.assertEqual(c2[1], ('alarmclock', -0.05234673619270325))
 
+    def test_ontology_tinder_single_name_closest(self):
+        closest_match = self.ot.closest_concept_of_name("wall")
+        self.assertEqual(len([closest_match]), 1)
+        c1 = closest_match
+        self.assertEqual(c1, ('dishwasher', -0.010839177295565605))
 
 class OntologyTinderTestCase(unittest.TestCase):
 
