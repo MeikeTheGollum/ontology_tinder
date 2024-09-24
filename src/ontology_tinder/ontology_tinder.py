@@ -67,10 +67,26 @@ class OntologyTinder:
 
     def closest_concept_of_name(self, name: str) -> typing_extensions.List[owlready2.Thing]:
         """
-        Instead of search for a list of most similar matches, this returns the first entry of the list of most similar
+        Instead of searching for a list of most similar matches, this returns the first entry of the list of most similar
         concepts of a given name.
 
         :param name: The name
         :return: The most likely concept
         """
         return self.most_similar_concept_of_name(name)[0]
+
+    def closest_concept_of_names(self, names: typing_extensions.List[str]) -> typing_extensions.List[owlready2.Thing]:
+        """
+        Instead of searching for a list of most similar matches, this returns the first entry of the list of most similar
+        concepts of a given list of names.
+
+        :param name: The names
+        :return: The most likely concepts
+        """
+        return [concepts[0] for concepts in self.most_similar_concept_of_names(names)]
+
+    #TODO: Implement a function, that adds a new key into the list of vectors, so that we can test with new words outside
+    # of the scope of the generated vector list from the ontology
+
+    #TODO: Ask Tom, if I should include the URIs of the found concepts (e.g.  "http://test.owl#TestEntry" or if he needs
+    # any information besides that
