@@ -97,8 +97,4 @@ class OntologyTinder:
         return result[name][0][0]
 
 
-    # TODO: Implement a function, that adds a new key into the list of vectors, so that we can test with new words outside
-    # of the scope of the generated vector list from the ontology
 
-    # TODO: Ask Tom, if I should include the URIs of the found concepts (e.g.  "http://test.owl#TestEntry" or if he needs
-    # any information besides that

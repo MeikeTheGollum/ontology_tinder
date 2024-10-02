@@ -13,7 +13,6 @@ from ontology_tinder.ontology_tinder import OntologyTinder
 
 
 class MinimalOntologyTinderTestCase(unittest.TestCase):
-    # TODO Create an ontology that has 3 concepts
 
     ot: OntologyTinder
 

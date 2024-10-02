@@ -2,3 +2,6 @@ owlready2
 typing_extensions
 gensim
 nltk
+playwright
+requests
+zipfile36
