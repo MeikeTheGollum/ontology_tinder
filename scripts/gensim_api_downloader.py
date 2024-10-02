@@ -29,6 +29,7 @@ def load_availables_models():
                 model_data['description'][:40] + '...',
             )
         )
+    return models
 
 
 load_availables_models()

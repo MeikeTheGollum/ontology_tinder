@@ -99,21 +99,23 @@ class OntologyTinder:
         result = self.most_similar_concept_of_names([name])
         return result[name][0][0]
 
-    def closest_model(self, names: list(str)):
+    def closest_model(self, names: List[str]):
         """
         Get the closest model for a given list of names.
         :param names: The names
         :return: The most likely model
         """
         model = api_downloader.load_availables_models()
-        count = 0
+
+        contained_names = []
+        not_contained_names = []
+
         for item in names:
             try:
                 model.__getitem__(item)
             except KeyError as e:
-                count += 1
-                print(e)
-                pass
-
-        print(f"{count} of the {len(names)} were not present in the model")
+                not_contained_names.append(item)
+            else:
+                contained_names.append(item)
+        return contained_names, not_contained_names
 
