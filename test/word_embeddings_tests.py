@@ -41,6 +41,11 @@ class MinimalOntologyTinderTestCase(unittest.TestCase):
         self.assertEqual(similar_concept.name, "alarmclock")
 
 
+    def test_closest_model(self):
+        most_likely_model = self.ot.closest_model(["alarmclock", "apple", "wall", "dishwasher"])
+
+
+
 class OntologyTinderTestCase(unittest.TestCase):
 
     @classmethod

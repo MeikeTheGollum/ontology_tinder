@@ -5,10 +5,12 @@ from gensim.models import Word2Vec, KeyedVectors
 import gensim.downloader
 from owlready2 import Ontology
 from typing_extensions import List, Dict, Tuple, Optional
+import scripts.gensim_api_downloader as api_downloader
 
 
 def prune_name(name: str):
     return name.split("_")[0]
+
 
 class OntologyTinder:
     ontology: Ontology
@@ -60,7 +62,8 @@ class OntologyTinder:
         model = Word2Vec(data, min_count=1, vector_size=100, window=5)
         return model.wv
 
-    def most_similar_concept_of_names(self, names: List[str], top_n: int=5) -> Dict[str, Tuple[owlready2.Thing, float]]:
+    def most_similar_concept_of_names(self, names: List[str], top_n: int = 5) -> Dict[
+        str, Tuple[owlready2.Thing, float]]:
         """
         Find the most similar concepts for a list of names in the ontology.
         This uses a word embedding model for all concepts and the name to calculate the most similar concept.
@@ -96,5 +99,21 @@ class OntologyTinder:
         result = self.most_similar_concept_of_names([name])
         return result[name][0][0]
 
+    def closest_model(self, names: list(str)):
+        """
+        Get the closest model for a given list of names.
+        :param names: The names
+        :return: The most likely model
+        """
+        model = api_downloader.load_availables_models()
+        count = 0
+        for item in names:
+            try:
+                model.__getitem__(item)
+            except KeyError as e:
+                count += 1
+                print(e)
+                pass
 
+        print(f"{count} of the {len(names)} were not present in the model")
 

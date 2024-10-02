@@ -38,8 +38,8 @@ def extract_model(url):
     """
     filename = url.split("/")[-1]
     with zipfile.ZipFile(f"../resources/{filename}", 'r') as zip_ref:
-        zip_ref.extractall("../resources/models")
-        print(f"Extracted {filename} to models folder")
+        zip_ref.extractall(f"../resources/{filename}")
+        print(f"Extracted {filename} ")
 
 #def load_model(filename):
 

@@ -4,21 +4,32 @@ from collections import deque
 
 import typing_extensions
 
+test = ("A-Frameshelf",
+"AgentBody",
+"AlarmClock",
+"AluminumFoil",
+"AppleA",
+"AppleB",
+"Armchair",
+"Baseballbat")
 
 def load_availables_models():
     """
+    Loads every currently available models present in gensim.
 
     """
     info = api.info()
-    model1 = api.load("glove-wiki-gigaword-200")
-    print(model1.most_similar("cat"))
+    models = []
+    for model_name, model_data in sorted(info['models'].items()):
+        models.append(api.load(model_name))
+        print(
+            '%s (%d records): %s' % (
+                model_name,
+                model_data.get('num_records', -1),
+                model_data['description'][:40] + '...',
+            )
+        )
 
-# def detect_percentage_of_keys_present(model, names: list(str)) -> int:
-#     """
-#
-#     """
-#     count = 0
-#     final_dict = {x:names[x] for x in names
-#                   if x in model}
-#     print("final dic:", str(final_dict))
-#     return (len(final_dict))
+
+load_availables_models()
+
