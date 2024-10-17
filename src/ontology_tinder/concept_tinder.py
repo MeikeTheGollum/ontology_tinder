@@ -4,6 +4,7 @@ from typing import List, Dict
 import owlready2
 import requests
 import typing_extensions
+from nltk.sem.chat80 import concepts
 from owlready2 import Ontology
 from requests import Response
 from typing import Any
@@ -11,8 +12,15 @@ from typing import Any
 
 class ConceptTinder:
 
-    def hello(self):
-        print("Hello")
+    ontology: Ontology
+
+    def __init__(self, ontology: Ontology):
+        self.ontology = ontology
+        self.ontology.load()
+
+    @cached_property
+    def concept_names(self) -> List[str]:
+        return [concept.name for concept in self.ontology.classes()]
 
     def get_concept_matches(self, names: List[str]) -> List[Dict]:
         """
@@ -75,3 +83,32 @@ class ConceptTinder:
         """
         tmp = requests.get(f"http://api.conceptnet.io/related/c/en/{name}").json()
         return tmp['related']
+
+    def search_direct_match(self, name: str) -> None | str:
+        """
+        Searches for direct match for a string in a given ontology. If a direct match is found
+        the method returns the concept or a bool if no direct match was found.
+        :param name: The name
+        :return: Direct match or False if no direct match was found
+
+        """
+        try:
+            tmp = self.concept_names.index(name)
+            return self.concept_names[tmp]
+        except ValueError:
+            return None
+
+
+
+    def search_direct_matches(self, names:List[str]):
+        """
+        Searches for direct matches for a list of strings in a given ontology. If a direct match is found
+        for a string entry, the method appends a tuple (name, concept) to the return.
+        If no direct match is found, the method returns (name, none).
+
+        :param names: List of names
+        :return: Direct match or None if no direct match was found
+        """
+        return [(name, self.search_direct_match(name)) for name in names]
+
+

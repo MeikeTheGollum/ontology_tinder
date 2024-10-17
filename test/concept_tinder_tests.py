@@ -20,8 +20,13 @@ class MinimalConceptNetTestCase(unittest.TestCase):
         # load the 3 concepts ontology
         # Test ontology in resources folder
         ct = cls.ct
+        cls.ct = ConceptTinder(get_ontology("https://raw.githubusercontent.com/MeikeTheGollum/ontology_tinder/refs/heads/main/resources/ontology_tinder_test_1.owl"))
 
-  
+    def test_read_minimal_ontology(self):
+        concepts = self.ct.concept_names
+        print(concepts)
+
+        self.assertEqual(len(concepts), 3)
 
     def test_concept_not_found(self):
         obj = self.ct.get_concept_match(self, "appleA")
@@ -63,5 +68,17 @@ class MinimalConceptNetTestCase(unittest.TestCase):
     def test_related_terms(self):
         related_terms = self.ct.get_related_concepts(self, "alarmclock")
         self.assertEqual(len(related_terms), 50)
+
+    def test_no_direct_match(self):
+        no_direct_match= self.ct.search_direct_match('Apple')
+        self.assertEqual(no_direct_match, None)
+
+    def test_direct_match(self):
+        direct_match= self.ct.search_direct_match('wall')
+        self.assertEqual(direct_match, 'wall')
+
+    def test_direct_matches(self):
+        direct_matches = self.ct.search_direct_matches(["apple", "wall", "alarmclock"])
+        print(direct_matches)
 if __name__ == '__main__':
     unittest.main()
