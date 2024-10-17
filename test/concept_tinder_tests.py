@@ -79,6 +79,9 @@ class MinimalConceptNetTestCase(unittest.TestCase):
 
     def test_direct_matches(self):
         direct_matches = self.ct.search_direct_matches(["apple", "wall", "alarmclock"])
-        print(direct_matches)
+        c1, c2, c3 = direct_matches[0][1], direct_matches[1][1], direct_matches[2][1]
+        self.assertEqual(c1, None)
+        self.assertEqual(c2, 'wall')
+        self.assertEqual(c3, 'alarmclock')
 if __name__ == '__main__':
     unittest.main()
