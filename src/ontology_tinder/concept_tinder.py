@@ -1,6 +1,8 @@
+from cgitb import reset
 from functools import cached_property
 from typing import List, Dict
 
+import compose
 import owlready2
 import requests
 import typing_extensions
@@ -8,7 +10,7 @@ from nltk.sem.chat80 import concepts
 from owlready2 import Ontology
 from requests import Response
 from typing import Any
-
+from operator import itemgetter
 
 class ConceptTinder:
 
@@ -121,7 +123,10 @@ class ConceptTinder:
         for entry in self.concept_names:
             relateness = requests.get(f"http://api.conceptnet.io//relatedness?node1=/c/en/{name}&node2=/c/en/{entry}").json()
             results.append((name, (entry, relateness['value'])))
-        return sorted(results, key=lambda x: x[1], reverse=True)
+        return sorted(results, key=compose.compose(itemgetter(1), itemgetter(0)))
+
+    def search_most_similar_matches(self, names: List[str]) :
+        return [[self.search_most_similar_match(name) for name in names]]
 
 
 
