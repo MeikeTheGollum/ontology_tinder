@@ -111,4 +111,17 @@ class ConceptTinder:
         """
         return [(name, self.search_direct_match(name)) for name in names]
 
+    def search_most_similar_match(self, name: str) -> (str, (str, float) ):
+        """
+        Retrieves the most similar match for a given string in a given ontology.
+        :param name: The name
+        :return: The most similar match
+        """
+        results = []
+        for entry in self.concept_names:
+            relateness = requests.get(f"http://api.conceptnet.io//relatedness?node1=/c/en/{name}&node2=/c/en/{entry}").json()
+            results.append((name, (entry, relateness['value'])))
+        return sorted(results, key=lambda x: x[1], reverse=True)
+
+
 

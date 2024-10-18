@@ -83,5 +83,13 @@ class MinimalConceptNetTestCase(unittest.TestCase):
         self.assertEqual(c1, None)
         self.assertEqual(c2, 'wall')
         self.assertEqual(c3, 'alarmclock')
+
+    def test_most_similar_matches(self):
+        related_matches = self.ct.search_most_similar_match("floor")
+        c1, c2, c3 = related_matches[0], related_matches[1], related_matches[2]
+        self.assertEqual(len(related_matches), 3)
+        self.assertEqual(c1[1], ('wall', 0.172))
+        self.assertEqual(c2[1], ('dishwasher', 0.07))
+        self.assertEqual(c3[1], ('alarmclock', -0.007))
 if __name__ == '__main__':
     unittest.main()
