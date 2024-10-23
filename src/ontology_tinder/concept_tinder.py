@@ -1,13 +1,15 @@
 from cgitb import reset
 from functools import cached_property
-from typing import List, Dict
+from typing import List, Dict, Literal
 
+import rdflib
+from rdflib import Graph, Literal
 import compose
 import owlready2
 import requests
 import typing_extensions
 from nltk.sem.chat80 import concepts
-from owlready2 import Ontology
+from owlready2 import Ontology, default_world
 from requests import Response
 from typing import Any
 from operator import itemgetter
@@ -15,6 +17,7 @@ from operator import itemgetter
 class ConceptTinder:
 
     ontology: Ontology
+    graph = default_world.as_rdflib_graph()
 
     def __init__(self, ontology: Ontology):
         self.ontology = ontology
@@ -127,6 +130,14 @@ class ConceptTinder:
 
     def search_most_similar_matches(self, names: List[str]) :
         return [[self.search_most_similar_match(name) for name in names]]
+
+    def get_concept_uri_of_match(self, name: str):
+        search_query = """SELECT DISTINCT ?x WHERE{
+           ?x rdfs:label ?s.
+           }
+           """
+        res = self.graph.query(search_query, initBindings={"s": rdflib.term.Literal(name)})
+        return res
 
 
 

@@ -94,5 +94,9 @@ class MinimalConceptNetTestCase(unittest.TestCase):
     def test_most_similar_matches_for_list(self):
         related_matches = self.ct.search_most_similar_matches(["wall", "floor", "apple"])
         print(related_matches)
+
+    def test_get_concept_iri_of_direct_match(self):
+        test = self.ct.get_concept_uri_of_match("wall")
+        print(list(test))
 if __name__ == '__main__':
     unittest.main()
