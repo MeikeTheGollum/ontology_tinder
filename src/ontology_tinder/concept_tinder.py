@@ -1,4 +1,5 @@
 from cgitb import reset
+from collections import Counter
 from functools import cached_property
 from typing import List, Dict, Literal
 
@@ -138,6 +139,12 @@ class ConceptTinder:
            """
         res = self.graph.query(search_query, initBindings={"s": rdflib.term.Literal(name)})
         return res
+
+    def get_coverage(self, names: List[str]):
+        direct_matches = self.search_direct_matches(names)
+        tmp = Counter(elem[1] == None for elem in direct_matches)
+        percentage = 100* float(tmp[True]) / float(len(direct_matches))
+        return str(round(percentage, 2)) + "%"
 
 
 

@@ -84,6 +84,10 @@ class MinimalConceptNetTestCase(unittest.TestCase):
         self.assertEqual(c2, 'wall')
         self.assertEqual(c3, 'alarmclock')
 
+    def test_coverage_of_direct_matches(self):
+        coverage = self.ct.get_coverage(["apple", "beer", "alarmclock"])
+        self.assertEqual(coverage, "66.67%")
+
     def test_most_similar_matches(self):
         related_matches = self.ct.search_most_similar_match("floor")
         c1, c2, c3 = related_matches[0], related_matches[1], related_matches[2]
