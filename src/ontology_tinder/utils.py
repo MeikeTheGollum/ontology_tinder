@@ -37,3 +37,15 @@ def model_coverage_of_words(model: KeyedVectors, names: List[str]) -> Tuple[List
         else:
             contained_names.append(item)
     return contained_names, not_contained_names
+
+def direct_match_coverage_of_words(concepts:List[str], names:List[str]) -> Tuple[List[str], List[str]]:
+    contained_names = []
+    not_contained_names = []
+    for item in tqdm.tqdm(names, desc="Checking direct match coverage"):
+        try:
+            tmp = concepts.index(item)
+        except ValueError:
+            not_contained_names.append(item)
+        else:
+            contained_names.append(item)
+    return  contained_names, not_contained_names

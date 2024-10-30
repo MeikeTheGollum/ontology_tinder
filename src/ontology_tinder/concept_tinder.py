@@ -24,6 +24,7 @@ class ConceptTinder:
         self.ontology = ontology
         self.ontology.load()
 
+
     @cached_property
     def concept_names(self) -> List[str]:
         return [concept.name for concept in self.ontology.classes()]
@@ -141,6 +142,12 @@ class ConceptTinder:
         return res
 
     def get_coverage(self, names: List[str]):
+        """
+        Caclulates the overal covergafe given a list of names and the loaded ontology.
+
+        :param names: The list of strings
+        :return: Coverage in percentage as a string
+        """
         direct_matches = self.search_direct_matches(names)
         tmp = Counter(elem[1] == None for elem in direct_matches)
         percentage = 100* float(tmp[True]) / float(len(direct_matches))
