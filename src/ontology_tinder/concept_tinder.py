@@ -125,6 +125,8 @@ class ConceptTinder:
         :return: The most similar match
         """
         results = []
+        if name in self.concept_names:
+            return self.concept_names[name]
         for entry in self.concept_names:
             relateness = requests.get(f"http://api.conceptnet.io//relatedness?node1=/c/en/{name}&node2=/c/en/{entry}").json()
             results.append((name, (entry, relateness['value'])))

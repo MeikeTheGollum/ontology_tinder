@@ -4,6 +4,7 @@ import sys
 import requests
 from owlready2 import get_ontology
 
+import src.ontology_tinder.utils
 from src.ontology_tinder import concept_tinder, collector
 
 import gensim.downloader as api
@@ -102,5 +103,30 @@ class MinimalConceptNetTestCase(unittest.TestCase):
     def test_get_concept_iri_of_direct_match(self):
         test = self.ct.get_concept_uri_of_match("wall")
         print(list(test))
+
+class RealLifeTests(unittest.TestCase):
+    ct = ConceptTinder
+    prunedNames = src.ontology_tinder.utils.read_object_names("pruned_names.txt", "resources")
+
+    @classmethod
+    def setUpClass(cls):
+        ct = cls.ct
+        cls.ct = ConceptTinder(get_ontology("http://www.ease-crc.org/ont/SOMA-HOME.owl"))
+
+    def test_coverage_of_direct_match(self):
+        coverage = self.ct.get_coverage(self.prunedNames)
+        self.assertEqual(coverage, "94.37%")
+
+    def test_most_similar_match(self):
+        most_similar = self.ct.search_most_similar_match("alarmclock")
+        print(most_similar)
+
+    def test_direct_matches(self):
+        direct_matches = self.ct.search_direct_matches( self.prunedNames)
+        c1 = [item for item in direct_matches if item[0] == "A-Frameshelf"]
+        c2 = [item for item in direct_matches if item[0] == "Fork"]
+        self.assertEqual(c1[0][1], None)
+        self.assertEqual(c2[0][1], "Fork")
+
 if __name__ == '__main__':
     unittest.main()

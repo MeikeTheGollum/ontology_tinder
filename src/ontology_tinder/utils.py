@@ -1,7 +1,22 @@
+import os
+
 import tqdm
 from gensim.models import Word2Vec, KeyedVectors
 from typing_extensions import List, Tuple
 
+def read_object_names(file_name : str, foulder: str) -> List[str]:
+    """
+    Reads names and returns them from a given file.
+
+    :param file_name: The name of the file to read.
+    :param foulder: The name of the foulder to read.
+    :return: A list of names.
+    """
+    words = []
+    with open(os.path.join("..", f"{foulder}", f"{file_name}"), "r") as file:
+        words = file.read().split("\n")
+
+    return words
 
 def prune_object_names(object_names: List[str]) -> List[str]:
     """
