@@ -154,7 +154,7 @@ class ConceptTinder:
 
     def get_coverage(self, names: List[str]):
         """
-        Caclulates the overal covergafe given a list of names and the loaded ontology.
+        Calculates the overall coverage given a list of names and the loaded ontology.
 
         :param names: The list of strings
         :return: Coverage in percentage as a string
