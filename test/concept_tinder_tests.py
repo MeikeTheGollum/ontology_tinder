@@ -1,15 +1,8 @@
-import os
 import unittest
-import sys
-import requests
+
 from owlready2 import get_ontology
 
 import src.ontology_tinder.utils
-from src.ontology_tinder import concept_tinder, collector
-
-import gensim.downloader as api
-
-from src.ontology_tinder import concept_tinder
 from src.ontology_tinder.concept_tinder import ConceptTinder
 
 
@@ -21,7 +14,8 @@ class MinimalConceptNetTestCase(unittest.TestCase):
         # load the 3 concepts ontology
         # Test ontology in resources folder
         ct = cls.ct
-        cls.ct = ConceptTinder(get_ontology("https://raw.githubusercontent.com/MeikeTheGollum/ontology_tinder/refs/heads/main/resources/ontology_tinder_test_1.owl"))
+        cls.ct = ConceptTinder(get_ontology(
+            "https://raw.githubusercontent.com/MeikeTheGollum/ontology_tinder/refs/heads/main/resources/ontology_tinder_test_1.owl"))
 
     def test_read_minimal_ontology(self):
         concepts = self.ct.concept_names
@@ -40,7 +34,7 @@ class MinimalConceptNetTestCase(unittest.TestCase):
         self.assertEqual('/c/en/alarmclock', obj['@id'])
 
     def test_concept_matches(self):
-        tmp_objs = self.ct.get_concept_matches(self,["apple", "wall", "alarmclock"])
+        tmp_objs = self.ct.get_concept_matches(self, ["apple", "wall", "alarmclock"])
         id1, id2, id3 = tmp_objs[0]['@id'], tmp_objs[1]['@id'], tmp_objs[2]['@id']
         self.assertEqual('/c/en/apple', id1)
         self.assertEqual('/c/en/wall', id2)
@@ -57,7 +51,7 @@ class MinimalConceptNetTestCase(unittest.TestCase):
         s1, s2, s3 = tmp_objs[0], tmp_objs[1], tmp_objs[2]
         self.assertEqual(len(s1), 20)
         self.assertEqual(len(s2), 20)
-        self.assertEqual(len(s3), 6)#
+        self.assertEqual(len(s3), 6)  #
 
     def test_relatedness_of_pair(self):
         val1 = self.ct.get_relatedness_between_concepts(self, "wall", "floor")
@@ -71,11 +65,11 @@ class MinimalConceptNetTestCase(unittest.TestCase):
         self.assertEqual(len(related_terms), 50)
 
     def test_no_direct_match(self):
-        no_direct_match= self.ct.search_direct_match('Apple')
+        no_direct_match = self.ct.search_direct_match('Apple')
         self.assertEqual(no_direct_match, None)
 
     def test_direct_match(self):
-        direct_match= self.ct.search_direct_match('wall')
+        direct_match = self.ct.search_direct_match('wall')
         self.assertEqual(direct_match, 'wall')
 
     def test_direct_matches(self):
@@ -96,6 +90,7 @@ class MinimalConceptNetTestCase(unittest.TestCase):
         self.assertEqual(c1[1], ('wall', 0.172))
         self.assertEqual(c2[1], ('dishwasher', 0.07))
         self.assertEqual(c3[1], ('alarmclock', -0.007))
+
     def test_most_similar_matches_for_list(self):
         related_matches = self.ct.search_most_similar_matches(["wall", "floor", "apple"])
         print(related_matches)
@@ -103,6 +98,7 @@ class MinimalConceptNetTestCase(unittest.TestCase):
     def test_get_concept_iri_of_direct_match(self):
         test = self.ct.get_concept_uri_of_match("wall")
         print(list(test))
+
 
 class RealLifeTests(unittest.TestCase):
     ct = ConceptTinder
@@ -122,18 +118,23 @@ class RealLifeTests(unittest.TestCase):
         self.assertEqual(direct_match, "Fork")
 
     def test_most_similar_match(self):
-        #most_similar = self.ct.search_most_similar_match("Designer")
+        most_similar = self.ct.search_most_similar_match("Designer")
+        print(self.ct.class_names)
+
+    def test_most_similar_match2(self):
+        most_similar = self.ct.search_most_similar_match_swaggy("Designer")
         print(self.ct.class_names)
 
     def test_filter_ontology(self):
         print(self.ct.filter_concepts_by_namespace("SOMA"))
 
     def test_direct_matches(self):
-        direct_matches = self.ct.search_direct_matches( self.prunedNames)
+        direct_matches = self.ct.search_direct_matches(self.prunedNames)
         c1 = [item for item in direct_matches if item[0] == "A-Frameshelf"]
         c2 = [item for item in direct_matches if item[0] == "Fork"]
         self.assertEqual(c1[0][1], None)
         self.assertEqual(c2[0][1], "Fork")
+
 
 if __name__ == '__main__':
     unittest.main()

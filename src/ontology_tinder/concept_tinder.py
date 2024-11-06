@@ -141,6 +141,21 @@ class ConceptTinder:
                 results.append((name, (entry, relateness['value'])))
         return sorted(results, key=compose.compose(itemgetter(1), itemgetter(0)))
 
+    def search_most_similar_match_swaggy(self, name: str) -> (str, (str, float) ):
+        """
+        Retrieves the most similar match for a given string in a given ontology.
+        :param name: The name
+        :return: The most similar match
+        """
+        results = []
+        if name in self.concept_names:
+            return self.concept_names[self.concept_names.index(name)]
+
+        most_similar = requests.get(f'http://api.conceptnet.io/query?start=/c/en/{name}&rel=/r/ExternalURL&limit=10').json()
+
+        print(most_similar)
+        return sorted(results, key=compose.compose(itemgetter(1), itemgetter(0)))
+
     def search_most_similar_matches(self, names: List[str]) :
         return [[self.search_most_similar_match(name) for name in names]]
 
