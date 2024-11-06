@@ -29,6 +29,10 @@ class ConceptTinder:
     def concept_names(self) -> List[str]:
         return [concept.name for concept in self.ontology.classes()]
 
+    @cached_property
+    def class_names(self) -> List[str]:
+
+        return [concept for concept in self.ontology.classes()]
     def get_concept_matches(self, names: List[str]) -> List[Dict]:
         """
         Collects the API responses from conceptnet for a given list of strings
@@ -126,10 +130,15 @@ class ConceptTinder:
         """
         results = []
         if name in self.concept_names:
-            return self.concept_names[name]
+            return self.concept_names[self.concept_names.index(name)]
+
         for entry in self.concept_names:
             relateness = requests.get(f"http://api.conceptnet.io//relatedness?node1=/c/en/{name}&node2=/c/en/{entry}").json()
-            results.append((name, (entry, relateness['value'])))
+            print(relateness)
+
+            if relateness['value'] >= 0.5:
+                print(relateness['value'])
+                results.append((name, (entry, relateness['value'])))
         return sorted(results, key=compose.compose(itemgetter(1), itemgetter(0)))
 
     def search_most_similar_matches(self, names: List[str]) :
@@ -156,4 +165,8 @@ class ConceptTinder:
         return str(round(percentage, 2)) + "%"
 
 
+    def filter_concepts_by_namespace(self, namespace:str):
+        filtered = []
 
+        filtered = self.ontology.search( type =namespace)
+        return filtered

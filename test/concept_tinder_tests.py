@@ -117,9 +117,16 @@ class RealLifeTests(unittest.TestCase):
         coverage = self.ct.get_coverage(self.prunedNames)
         self.assertEqual(coverage, "94.37%")
 
+    def test_most_similar_match_direct_match(self):
+        direct_match = self.ct.search_most_similar_match("Fork")
+        self.assertEqual(direct_match, "Fork")
+
     def test_most_similar_match(self):
-        most_similar = self.ct.search_most_similar_match("alarmclock")
-        print(most_similar)
+        #most_similar = self.ct.search_most_similar_match("Designer")
+        print(self.ct.class_names)
+
+    def test_filter_ontology(self):
+        print(self.ct.filter_concepts_by_namespace("SOMA"))
 
     def test_direct_matches(self):
         direct_matches = self.ct.search_direct_matches( self.prunedNames)
