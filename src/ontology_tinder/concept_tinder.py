@@ -128,33 +128,16 @@ class ConceptTinder:
         :param name: The name
         :return: The most similar match
         """
-        results = []
+        tmp_name = name.lower()
         if name in self.concept_names:
             return self.concept_names[self.concept_names.index(name)]
+        else:
+            most_similar = requests.get(f'http://api.conceptnet.io/related/c/en/{tmp_name}?filter=/c/en&limit=5').json()
+            tmp = [(x['@id'].split("c/en/")[1], x['weight']) for x in most_similar['related']]
+            print(tmp)
+            return tmp
 
-        for entry in self.concept_names:
-            relateness = requests.get(f"http://api.conceptnet.io//relatedness?node1=/c/en/{name}&node2=/c/en/{entry}").json()
-            print(relateness)
 
-            if relateness['value'] >= 0.5:
-                print(relateness['value'])
-                results.append((name, (entry, relateness['value'])))
-        return sorted(results, key=compose.compose(itemgetter(1), itemgetter(0)))
-
-    def search_most_similar_match_swaggy(self, name: str) -> (str, (str, float) ):
-        """
-        Retrieves the most similar match for a given string in a given ontology.
-        :param name: The name
-        :return: The most similar match
-        """
-        results = []
-        if name in self.concept_names:
-            return self.concept_names[self.concept_names.index(name)]
-
-        most_similar = requests.get(f'http://api.conceptnet.io/query?start=/c/en/{name}&rel=/r/ExternalURL&limit=10').json()
-
-        print(most_similar)
-        return sorted(results, key=compose.compose(itemgetter(1), itemgetter(0)))
 
     def search_most_similar_matches(self, names: List[str]) :
         return [[self.search_most_similar_match(name) for name in names]]
@@ -180,8 +163,3 @@ class ConceptTinder:
         return str(round(percentage, 2)) + "%"
 
 
-    def filter_concepts_by_namespace(self, namespace:str):
-        filtered = []
-
-        filtered = self.ontology.search( type =namespace)
-        return filtered

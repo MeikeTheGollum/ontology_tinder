@@ -118,15 +118,18 @@ class RealLifeTests(unittest.TestCase):
         self.assertEqual(direct_match, "Fork")
 
     def test_most_similar_match(self):
-        most_similar = self.ct.search_most_similar_match("Designer")
-        print(self.ct.class_names)
+        most_similar = self.ct.search_most_similar_match("designer")
+        print(most_similar)
 
     def test_most_similar_match2(self):
         most_similar = self.ct.search_most_similar_match_swaggy("Designer")
-        print(self.ct.class_names)
+        print(most_similar)
 
-    def test_filter_ontology(self):
-        print(self.ct.filter_concepts_by_namespace("SOMA"))
+    def test_most_similar_matches(self):
+        most_similar_matches = self.ct.search_most_similar_matches(self.prunedNames)
+        print(most_similar_matches)
+
+
 
     def test_direct_matches(self):
         direct_matches = self.ct.search_direct_matches(self.prunedNames)
