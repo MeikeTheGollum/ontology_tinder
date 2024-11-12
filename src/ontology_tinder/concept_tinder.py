@@ -1,7 +1,7 @@
 from cgitb import reset
 from collections import Counter
 from functools import cached_property
-from typing import List, Dict, Literal
+from typing import List, Dict, Literal, Tuple
 
 import rdflib
 from rdflib import Graph, Literal
@@ -105,6 +105,8 @@ class ConceptTinder:
         """
         try:
             tmp = self.concept_names.index(name)
+            with open("found.txt", 'a') as file:
+                file.write(f"{name}, {tmp}\n")
             return self.concept_names[tmp]
         except ValueError:
             return None
@@ -140,7 +142,27 @@ class ConceptTinder:
 
 
     def search_most_similar_matches(self, names: List[str]) :
-        return [[self.search_most_similar_match(name) for name in names]]
+        tmp = [[self.search_most_similar_match(name) for name in names]]
+        print(tmp)
+        res = [self.search_related_termins_in_onto(name, n) for n in tmp for name in names]
+        print(res)
+        return tmp
+
+
+    def search_related_termins_in_onto(self, name: str, related: Dict[(str, float)]):
+        print(type(related))
+        for i in related:
+            if i in self.concept_names:
+                tmp = self.ontology.search(iri=f"*{i}")
+                print(tmp)
+                with open("found_related_term.txt", 'a') as file:
+                    file.write(f"{name},{tmp} " + "\n")
+                return name, i
+        with open("not_found.txt", 'a') as file:
+            print("nothing found")
+            file.write(f"{name}\n" + "\n")
+        return name, None
+
 
     def get_concept_uri_of_match(self, name: str):
         search_query = """SELECT DISTINCT ?x WHERE{

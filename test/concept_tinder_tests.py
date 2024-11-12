@@ -98,6 +98,11 @@ class MinimalConceptNetTestCase(unittest.TestCase):
     def test_get_concept_iri_of_direct_match(self):
         test = self.ct.get_concept_uri_of_match("wall")
         print(list(test))
+    def test_search_related_terms_in_onto(self):
+        related = self.ct.search_most_similar_matches(["floor" , "wall" , "alarmclock"])
+        print(related)
+
+
 
 
 class RealLifeTests(unittest.TestCase):
@@ -124,6 +129,12 @@ class RealLifeTests(unittest.TestCase):
     def test_most_similar_match2(self):
         most_similar = self.ct.search_most_similar_match_swaggy("Designer")
         print(most_similar)
+
+    def test_search_related_terms(self):
+        lst = self.ct.search_most_similar_match("apple")
+        related = self.ct.search_related_termins_in_onto("fork", lst)
+        print(related)
+
 
     def test_most_similar_matches(self):
         most_similar_matches = self.ct.search_most_similar_matches(self.prunedNames)
