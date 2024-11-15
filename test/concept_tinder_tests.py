@@ -112,7 +112,7 @@ class RealLifeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         ct = cls.ct
-        cls.ct = ConceptTinder(get_ontology("http://www.ease-crc.org/ont/SOMA-HOME.owl"))
+        cls.ct = ConceptTinder(get_ontology("http://www.ease-crc.org/ont/SOMA_DFL_module.owl"))
 
     def test_coverage_of_direct_match(self):
         coverage = self.ct.get_coverage(self.prunedNames)
