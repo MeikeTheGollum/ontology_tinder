@@ -1,7 +1,7 @@
 from cgitb import reset
 from collections import Counter
 from functools import cached_property
-from typing import List, Dict, Literal, Tuple
+from typing import List, Dict, Literal, Tuple, Optional
 
 import rdflib
 from rdflib import Graph, Literal
@@ -17,12 +17,16 @@ from operator import itemgetter
 
 class ConceptTinder:
 
+    file : str
     ontology: Ontology
     graph = default_world.as_rdflib_graph()
 
-    def __init__(self, ontology: Ontology):
+    def __init__(self, file: str, ontology: Ontology):
+        self.file = file
+        g = Graph()
+        g.parse(f"{file}")
         self.ontology = ontology
-        self.ontology.load()
+        self.ontology.load(g)
 
 
     @cached_property
@@ -105,12 +109,27 @@ class ConceptTinder:
         """
         try:
             tmp = self.concept_names.index(name)
-            with open("found.txt", 'a') as file:
-                file.write(f"{name}, {tmp}\n")
-            return self.concept_names[tmp]
+            concept = self.concept_names[tmp]
+            if tmp is None:
+                self.search_related_terms_in_onto(name, self.search_most_similar_match(name))
+            else:
+                print(concept)
+               # self.write_into_matches("found", name, concept)
+                return concept
         except ValueError:
             return None
 
+    def write_into_matches(self, type: str, name: str, tmp: Optional = str):
+        if type == "found":
+            with open("../resources/found.txt", 'a') as file:
+                print("I want to write")
+                file.write(f"{name}, {tmp}\n")
+        elif type == "not found":
+            with open("../resources/not_found.txt", 'a') as file:
+                file.write(f"{name}, {tmp}\n")
+        elif type == "related":
+            with open("../resources/found_related_term.txt", 'a') as file:
+                file.write(f"{name}")
 
 
     def search_direct_matches(self, names:List[str]):
@@ -136,31 +155,27 @@ class ConceptTinder:
         else:
             most_similar = requests.get(f'http://api.conceptnet.io/related/c/en/{tmp_name}?filter=/c/en&limit=5').json()
             tmp = [(x['@id'].split("c/en/")[1], x['weight']) for x in most_similar['related']]
-            print(tmp)
             return tmp
 
 
 
     def search_most_similar_matches(self, names: List[str]) :
         tmp = [[self.search_most_similar_match(name) for name in names]]
-        print(tmp)
-        res = [self.search_related_termins_in_onto(name, n) for n in tmp for name in names]
+        res = [self.search_related_terms_in_onto(name, n) for n in tmp for name in names]
         print(res)
-        return tmp
+        return res
 
 
-    def search_related_termins_in_onto(self, name: str, related: Dict[(str, float)]):
+    def search_related_terms_in_onto(self, name: str, related: Dict[(str, float)]):
         print(type(related))
         for i in related:
             if i in self.concept_names:
-                tmp = self.ontology.search(iri=f"*{i}")
-                print(tmp)
-                with open("found_related_term.txt", 'a') as file:
-                    file.write(f"{name},{tmp} " + "\n")
-                return name, i
-        with open("not_found.txt", 'a') as file:
-            print("nothing found")
-            file.write(f"{name}\n" + "\n")
+                tmp = self.concept_names.index(i)
+                concept = self.concept_names[tmp]
+                self.write_into_matches("related", name, concept)
+                return name, concept
+
+        self.write_into_matches("not_found", name)
         return name, None
 
 
@@ -180,8 +195,16 @@ class ConceptTinder:
         :return: Coverage in percentage as a string
         """
         direct_matches = self.search_direct_matches(names)
+        for n in direct_matches:
+            if n[1] is None:
+                with open("../resources/not_found.txt", 'a') as file:
+                    file.write(f"{n[0]}\n")
+            else:
+                with open("../resources/found.txt", 'a') as file:
+                    file.write(f"{n[0]}, {n[1]}\n")
         tmp = Counter(elem[1] == None for elem in direct_matches)
-        percentage = 100* float(tmp[True]) / float(len(direct_matches))
+        print(tmp)
+        percentage = 100* float(tmp[False]) / float(len(direct_matches))
         return str(round(percentage, 2)) + "%"
 
 

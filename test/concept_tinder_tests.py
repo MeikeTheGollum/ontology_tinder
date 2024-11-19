@@ -112,11 +112,15 @@ class RealLifeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         ct = cls.ct
-        cls.ct = ConceptTinder(get_ontology("http://www.ease-crc.org/ont/SOMA_DFL_module.owl"))
+        cls.ct = ConceptTinder("../resources/SOMA_DFL_Module.rdf", get_ontology("file://../resources/SOMA_DFL_Module.rdf"))
 
     def test_coverage_of_direct_match(self):
         coverage = self.ct.get_coverage(self.prunedNames)
-        self.assertEqual(coverage, "94.37%")
+        self.assertEqual(coverage, "5.65%")
+
+    def test_direct_match(self):
+        direct_match = self.ct.search_direct_match("Fork")
+        self.assertEqual(direct_match, "Fork")
 
     def test_most_similar_match_direct_match(self):
         direct_match = self.ct.search_most_similar_match("Fork")
@@ -124,19 +128,19 @@ class RealLifeTests(unittest.TestCase):
 
     def test_most_similar_match(self):
         most_similar = self.ct.search_most_similar_match("designer")
-        print(most_similar)
+        self.assertEqual(len(most_similar), 5)
 
-    def test_most_similar_match2(self):
-        most_similar = self.ct.search_most_similar_match_swaggy("Designer")
-        print(most_similar)
+    def test_direct_match_no_direct_match(self):
+        not_found =  self.ct.search_direct_match("Meike")
 
     def test_search_related_terms(self):
         lst = self.ct.search_most_similar_match("apple")
-        related = self.ct.search_related_termins_in_onto("fork", lst)
+        related = self.ct.search_related_terms_in_onto("apple", lst)
         print(related)
 
 
     def test_most_similar_matches(self):
+        not_found = src.ontology_tinder.utils.read_object_names("not_found.txt", "resources")
         most_similar_matches = self.ct.search_most_similar_matches(self.prunedNames)
         print(most_similar_matches)
 
