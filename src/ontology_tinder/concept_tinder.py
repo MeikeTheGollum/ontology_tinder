@@ -129,7 +129,10 @@ class ConceptTinder:
                 file.write(f"{name}, {tmp}\n")
         elif type == "related":
             with open("../resources/found_related_term.txt", 'a') as file:
-                file.write(f"{name}")
+                file.write(f"{name}, {tmp}\n")
+        elif type == "no_related":
+            with open("../resources/no_related_terms_found.txt", 'a') as file:
+                file.write(f"{name}\n")
 
 
     def search_direct_matches(self, names:List[str]):
@@ -153,30 +156,39 @@ class ConceptTinder:
         if name in self.concept_names:
             return self.concept_names[self.concept_names.index(name)]
         else:
-            most_similar = requests.get(f'http://api.conceptnet.io/related/c/en/{tmp_name}?filter=/c/en&limit=5').json()
-            tmp = [(x['@id'].split("c/en/")[1], x['weight']) for x in most_similar['related']]
+            most_similar = requests.get(f'http://api.conceptnet.io/query?start=/c/en/{name}&rel=/r/RelatedTo&limit=5')
+            obj = most_similar.json()
+            tmp = [x['end']['@id'].split("c/en/")[1] for x in obj['edges']]
             return tmp
 
 
 
     def search_most_similar_matches(self, names: List[str]) :
-        tmp = [[self.search_most_similar_match(name) for name in names]]
+        tmp = [self.search_most_similar_match(name) for name in names]
         res = [self.search_related_terms_in_onto(name, n) for n in tmp for name in names]
-        print(res)
+        print("This is a result: " + str(res))
         return res
 
 
     def search_related_terms_in_onto(self, name: str, related: Dict[(str, float)]):
-        print(type(related))
-        for i in related:
-            if i in self.concept_names:
-                tmp = self.concept_names.index(i)
-                concept = self.concept_names[tmp]
-                self.write_into_matches("related", name, concept)
-                return name, concept
+        """
+        Searches for related terms in a given ontology.
+        :param name: The name
+        :param related: The related terms
+        :return: match
+        """
 
-        self.write_into_matches("not_found", name)
-        return name, None
+        print(type(related))
+
+        related_terms = [x[0] for x in related]
+        tmp = self.search_direct_matches( related_terms)
+        print(tmp)
+        for t in tmp:
+            if t[1] is None:
+                self.write_into_matches("not_found", name)
+            else:
+                self.write_into_matches("related", name, t[1])
+        return tmp
 
 
     def get_concept_uri_of_match(self, name: str):
@@ -206,5 +218,80 @@ class ConceptTinder:
         print(tmp)
         percentage = 100* float(tmp[False]) / float(len(direct_matches))
         return str(round(percentage, 2)) + "%"
+
+    def check_direct_matches(self, related: List[str]):
+        return None
+
+    def get_synonyms(self, name: str) -> List[str]:
+        synonyms = requests.get(f"https://api.conceptnet.io/c/en/{name.lower()}?rel=/r/Synonym&limit=10")
+        obj = synonyms.json()
+        print(obj)
+        if len(obj['edges']) != 0:
+            tmp = [x['end']['@id'].split("/")[len(x['end']['@id'].split("/"))-1] for x in obj['edges']]
+            for m in tmp:
+                print(self.find_related_term(m))
+            return tmp
+        else :
+            return None
+
+    def find_related_term(self, name: str):
+        related_terms = requests.get(f"https://api.conceptnet.io/c/en/{name}?rel=/r/IsA&limit=10").json()
+        print(related_terms)
+
+    def new_related_terms(self, names: List[str], badge_size: int):
+        """
+        Returns
+        """
+        if badge_size <1:
+            badge_size = len(names)
+
+        i = 0
+
+        while i < badge_size:
+            not_found = []
+            name = names[i]
+            print(name)
+            related_terms = requests.get(f'http://api.conceptnet.io/query?start=/c/en/{name.lower()}&rel=/r/RelatedTo&limit=5?filter=/c/en')
+            obj = related_terms.json()
+
+            print(name + str(obj['edges']))
+            if len(obj['edges']) == 0:
+                #try_synonym = self.get_synonyms(name)
+                #if try_synonym is None:
+                self.write_into_matches("no_related", name)
+                i += 1
+                continue
+            tmp =  [x['end']['@id'].split("/")[len(x['end']['@id'].split("/"))-1] for x in obj['edges']]
+            upper_tmp = [x.title() for x in tmp]
+            results = self.search_direct_matches(upper_tmp)
+            res_tmp = Counter(elem[1] is None for elem in results)
+            rel_term = []
+            print(not_found)
+            for m in results:
+                if m[1] is None:
+                    continue
+                else:
+                    rel_term.append(m[1])
+
+            if len(rel_term) > 0:
+                self.write_into_matches("related", name,rel_term)
+            elif len(rel_term) == 0:
+                #syn = self.get_synonyms(name)
+                #if syn is None:
+                 #   self.write_into_matches("no_related", name)
+                #else:
+                 #   syn_res = self.search_direct_matches(syn)
+                  #  res_tmp_syn = []
+                   # for w in syn_res:
+                    #    if w[1] is None:
+                     #       continue
+                      #  else:
+                       #     res_tmp_syn.append(w[1])
+                    #if len(res_tmp_syn) > 0:
+                     #   self.write_into_matches("related", name,res_tmp_syn)
+                    #else:
+                self.write_into_matches("no_related", name)
+
+            i+=1
 
 

@@ -1,5 +1,6 @@
 import unittest
 
+import requests
 from owlready2 import get_ontology
 
 import src.ontology_tinder.utils
@@ -108,7 +109,7 @@ class MinimalConceptNetTestCase(unittest.TestCase):
 class RealLifeTests(unittest.TestCase):
     ct = ConceptTinder
     prunedNames = src.ontology_tinder.utils.read_object_names("pruned_names.txt", "resources")
-
+    notFound = src.ontology_tinder.utils.read_object_names("not_found.txt", "resources")
     @classmethod
     def setUpClass(cls):
         ct = cls.ct
@@ -145,6 +146,8 @@ class RealLifeTests(unittest.TestCase):
         print(most_similar_matches)
 
 
+    def test_most_similar_matches_for_list(self):
+        lst = self.ct.search_most_similar_matches(["mug", "frameshelf", "apple"])
 
     def test_direct_matches(self):
         direct_matches = self.ct.search_direct_matches(self.prunedNames)
@@ -152,6 +155,24 @@ class RealLifeTests(unittest.TestCase):
         c2 = [item for item in direct_matches if item[0] == "Fork"]
         self.assertEqual(c1[0][1], None)
         self.assertEqual(c2[0][1], "Fork")
+    def test_test(self):
+        most_similar = requests.get("http://api.conceptnet.io/query?start=/c/en/mug&rel=/r/RelatedTo&limit=5")
+
+        obj = most_similar.json()
+        tmp = [edge['end']['@id'] for edge in obj['edges']]
+        test = tmp[0]
+        lol=  test.split("c/en/")
+        print(lol[1])
+        print(most_similar)
+        print(obj)
+        print(tmp)
+
+    def test_new_related_terms(self):
+        res = self.ct.new_related_terms(self.notFound, 5)
+
+
+    def test_get_synonym(self):
+        syn = self.ct.find_related_term("alarm_clock")
 
 
 if __name__ == '__main__':
