@@ -168,7 +168,8 @@ class RealLifeTests(unittest.TestCase):
         print(tmp)
 
     def test_new_related_terms(self):
-        res = self.ct.new_related_terms(self.notFound, 5)
+        res = self.ct.new_related_terms(self.notFound, len(self.notFound))
+        
 
 
     def test_get_synonym(self):

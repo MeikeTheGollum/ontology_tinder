@@ -240,7 +240,9 @@ class ConceptTinder:
 
     def new_related_terms(self, names: List[str], badge_size: int):
         """
-        Returns
+        Writes into pre-specified txt files with found or not found related terms in a given ontology.
+        :param names: List of strings that need related terms
+        :return:
         """
         if badge_size <1:
             badge_size = len(names)
