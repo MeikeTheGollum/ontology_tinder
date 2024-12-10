@@ -168,7 +168,9 @@ class RealLifeTests(unittest.TestCase):
         print(tmp)
 
     def test_new_related_terms(self):
-        res = self.ct.new_related_terms(self.notFound, len(self.notFound))
+        non_shitty_names = list(filter(lambda x: not "Robothor" in x, self.prunedNames))
+        print(non_shitty_names)
+        res = self.ct.new_related_terms(non_shitty_names, len(non_shitty_names))
         
 
 

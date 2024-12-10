@@ -249,7 +249,7 @@ class ConceptTinder:
 
         i = 0
 
-        while i < badge_size:
+        while i <= badge_size:
             not_found = []
             name = names[i]
             print(name)
@@ -264,6 +264,7 @@ class ConceptTinder:
                 i += 1
                 continue
             tmp =  [x['end']['@id'].split("/")[len(x['end']['@id'].split("/"))-1] for x in obj['edges']]
+            tmp_weight = [x['weight'] for x in obj['edges']]
             upper_tmp = [x.title() for x in tmp]
             results = self.search_direct_matches(upper_tmp)
             res_tmp = Counter(elem[1] is None for elem in results)
@@ -273,10 +274,13 @@ class ConceptTinder:
                 if m[1] is None:
                     continue
                 else:
+                    print("m", m[1])
+                    print(tmp_weight)
                     rel_term.append(m[1])
 
             if len(rel_term) > 0:
-                self.write_into_matches("related", name,rel_term)
+                tmp_rel_term = list(map(lambda  x, y : (x,y), rel_term, tmp_weight))
+                self.write_into_matches("related", name,tmp_rel_term)
             elif len(rel_term) == 0:
                 #syn = self.get_synonyms(name)
                 #if syn is None:
